@@ -144,114 +144,121 @@ header h1 {
 .timeline {
     position: relative;
     padding: 20px 0;
-    overflow-x: auto;
 }
 
-.timeline-container {
-    position: relative;
-    min-height: 600px;
-    padding: 150px 0;
+/* Vis-timeline custom styling */
+#timeline {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.timeline-axis {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #e5e7eb 0%, #e5e7eb 100%);
-    z-index: 1;
-}
-
-.timeline-item {
-    position: absolute;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 2;
-}
-
-.timeline-item:hover {
-    z-index: 10;
-}
-
-.timeline-item:hover .timeline-content {
-    transform: scale(1.05);
-}
-
-.timeline-marker {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    z-index: 3;
-}
-
-.timeline-marker.exact {
-    background: var(--success);
-}
-
-.timeline-marker.estimated {
-    background: var(--warning);
-}
-
-.timeline-content {
-    position: relative;
+/* Customize vis-timeline items */
+.vis-item-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
     background: white;
-    padding: 12px 16px;
     border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.vis-item:hover .vis-item-content {
+    transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    white-space: nowrap;
-    font-size: 0.85rem;
-    min-width: 150px;
-    text-align: center;
-    transition: transform 0.3s ease;
 }
 
-/* Content positioning based on level */
-.timeline-content[data-level="0"] {
-    margin-top: 30px; /* Space for marker on line */
+.timeline-icon-vis {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin-bottom: 4px;
 }
 
-.timeline-content[data-level="1"],
-.timeline-content[data-level="2"] {
-    margin-top: 30px; /* Below line, content below marker */
-}
-
-.timeline-content[data-level="-1"],
-.timeline-content[data-level="-2"] {
-    margin-bottom: 30px; /* Above line, content above marker */
-}
-
-.timeline-conf-name {
+.vis-conf-name {
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
-.timeline-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-.timeline-date {
+.vis-date {
     color: #6b7280;
     font-size: 0.8rem;
+    white-space: nowrap;
 }
 
-.timeline-days {
+.vis-days {
     color: var(--danger);
     font-size: 0.75rem;
-    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* Exact vs Estimated styling */
+.vis-item.exact-item .vis-item-dot {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.vis-item.estimated-item .vis-item-dot {
+    background-color: var(--warning);
+    border-color: var(--warning);
+}
+
+.vis-item.estimated-item .vis-item-content {
+    border: 2px dashed var(--warning);
+}
+
+/* Timeline background */
+.vis-timeline {
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+    border: none !important;
+}
+
+.vis-panel.vis-background {
+    background: transparent;
+}
+
+/* Time axis styling */
+.vis-time-axis .vis-text {
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.vis-time-axis .vis-text.vis-major {
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.vis-time-axis .vis-grid.vis-minor {
+    border-color: #e5e7eb;
+}
+
+.vis-time-axis .vis-grid.vis-major {
+    border-color: #d1d5db;
+}
+
+/* Current time indicator */
+.vis-current-time {
+    background-color: var(--danger);
+    width: 2px;
+}
+
+/* Remove old custom timeline styles */
+.timeline-container,
+.timeline-axis,
+.timeline-item,
+.timeline-marker,
+.timeline-content,
+.timeline-conf-name,
+.timeline-icon,
+.timeline-date,
+.timeline-days {
+    /* Removed - now using vis-timeline */
 }
 
 .filters {

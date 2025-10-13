@@ -160,7 +160,7 @@ function renderStats() {
     }
 }
 
-// Render timeline
+// Render timeline using vis-timeline library
 function renderTimeline() {
     const timelineEl = document.getElementById('timeline');
     const now = new Date();
@@ -174,116 +174,90 @@ function renderTimeline() {
         return;
     }
 
-    const container = document.createElement('div');
-    container.className = 'timeline-container';
-
-    const axis = document.createElement('div');
-    axis.className = 'timeline-axis';
-    container.appendChild(axis);
-
-    const timeRange = oneYearLater - now;
-
-    // Calculate positions and detect overlaps with smarter collision detection
-    const positions = upcomingDeadlines.map((deadline, index) => {
-        const position = ((deadline.date - now) / timeRange) * 100;
-        return { deadline, position, index, level: 0 };
-    });
-
-    // Improved collision detection considering card width (~180px = ~15% on 1200px screen)
-    const minDistance = 15; // minimum horizontal distance percentage to avoid overlap
-    const levels = [0, 1, -1, 2, -2]; // 0=on line, positive=below, negative=above
-
-    for (let i = 0; i < positions.length; i++) {
-        for (let j = i + 1; j < positions.length; j++) {
-            const dist = Math.abs(positions[j].position - positions[i].position);
-            if (dist < minDistance) {
-                // Items will overlap, find best level
-                const usedLevels = positions.slice(0, j)
-                    .filter(p => Math.abs(p.position - positions[j].position) < minDistance)
-                    .map(p => p.level);
-
-                // Find first available level
-                for (const level of levels) {
-                    if (!usedLevels.includes(level)) {
-                        positions[j].level = level;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    upcomingDeadlines.forEach((deadline, index) => {
-        const pos = positions[index];
-
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
-        item.style.left = `${pos.position}%`;
-
-        // Calculate position: level 0 on line, positive below, negative above
-        // Each level is 100px apart
-        const levelSpacing = 100;
-        if (pos.level === 0) {
-            item.style.top = '50%';
-            item.style.transform = 'translate(-50%, -50%)';
-        } else if (pos.level > 0) {
-            // Below the line
-            const offset = pos.level * levelSpacing;
-            item.style.top = `calc(50% + ${offset}px)`;
-            item.style.transform = 'translate(-50%, 0)';
-        } else {
-            // Above the line
-            const offset = Math.abs(pos.level) * levelSpacing;
-            item.style.bottom = `calc(50% + ${offset}px)`;
-            item.style.transform = 'translate(-50%, 0)';
-        }
-
-        const marker = document.createElement('div');
-        marker.className = `timeline-marker ${deadline.type}`;
-        item.appendChild(marker);
-
-        const content = document.createElement('div');
-        content.className = 'timeline-content';
-        content.dataset.level = pos.level; // Store level for styling
-
-        const confName = document.createElement('div');
-        confName.className = 'timeline-conf-name';
-        const config = CONFERENCE_CONFIG[deadline.conference];
-        if (config?.icon) {
-            const iconImg = document.createElement('img');
-            iconImg.src = config.icon;
-            iconImg.alt = deadline.conference;
-            iconImg.className = 'timeline-icon';
-            confName.appendChild(iconImg);
-        }
-        const nameText = document.createTextNode(deadline.conference);
-        confName.appendChild(nameText);
-        content.appendChild(confName);
-
-        const dateStr = document.createElement('div');
-        dateStr.className = 'timeline-date';
-        dateStr.textContent = deadline.date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-        if (deadline.type === 'estimated') {
-            dateStr.textContent += ' (est.)';
-        }
-        content.appendChild(dateStr);
-
-        const daysUntil = Math.ceil((deadline.date - now) / (1000 * 60 * 60 * 24));
-        const daysText = document.createElement('div');
-        daysText.className = 'timeline-days';
-        daysText.textContent = `${daysUntil} days`;
-        content.appendChild(daysText);
-
-        item.appendChild(content);
-        container.appendChild(item);
-    });
-
+    // Clear previous timeline
     timelineEl.innerHTML = '';
-    timelineEl.appendChild(container);
+
+    // Prepare items for vis-timeline
+    const items = upcomingDeadlines.map((deadline, index) => {
+        const config = CONFERENCE_CONFIG[deadline.conference];
+        const daysUntil = Math.ceil((deadline.date - now) / (1000 * 60 * 60 * 24));
+
+        // Create custom HTML content for each item
+        const iconHtml = config?.icon ?
+            `<img src="${config.icon}" alt="${deadline.conference}" class="timeline-icon-vis">` : '';
+
+        const typeLabel = deadline.type === 'estimated' ? ' (est.)' : '';
+        const typeClass = deadline.type === 'estimated' ? 'estimated-item' : 'exact-item';
+
+        return {
+            id: index,
+            content: `
+                <div class="vis-item-content">
+                    ${iconHtml}
+                    <div class="vis-conf-name">${deadline.conference}</div>
+                    <div class="vis-date">${deadline.date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    })}${typeLabel}</div>
+                    <div class="vis-days">${daysUntil} days</div>
+                </div>
+            `,
+            start: deadline.date,
+            className: typeClass,
+            type: 'point'
+        };
+    });
+
+    // Configure timeline options
+    const options = {
+        width: '100%',
+        height: '400px',
+        margin: {
+            item: 20,
+            axis: 40
+        },
+        orientation: {
+            axis: 'both',
+            item: 'top'
+        },
+        stack: true,
+        stackSubgroups: true,
+        verticalScroll: false,
+        zoomable: true,
+        zoomMin: 1000 * 60 * 60 * 24 * 7, // Min zoom: 1 week
+        zoomMax: 1000 * 60 * 60 * 24 * 365 * 2, // Max zoom: 2 years
+        min: now,
+        max: oneYearLater,
+        start: now,
+        end: oneYearLater,
+        format: {
+            minorLabels: {
+                month: 'MMM',
+                week: 'w'
+            },
+            majorLabels: {
+                month: 'MMMM YYYY',
+                year: 'YYYY'
+            }
+        },
+        tooltip: {
+            followMouse: true,
+            overflowMethod: 'cap'
+        }
+    };
+
+    // Create timeline
+    const timeline = new vis.Timeline(timelineEl, items, options);
+
+    // Add click event for items
+    timeline.on('select', function (properties) {
+        if (properties.items.length > 0) {
+            const itemId = properties.items[0];
+            const deadline = upcomingDeadlines[itemId];
+            console.log('Selected deadline:', deadline);
+        }
+    });
 }
 
 // Get countdown text with styling class
