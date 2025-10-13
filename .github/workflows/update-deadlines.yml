@@ -1,0 +1,73 @@
+name: Update Conference Deadlines
+
+on:
+  schedule:
+    # Run every Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-deadlines:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clone source repository
+        run: |
+          git clone https://github.com/ccfddl/ccf-deadlines.git temp_source
+
+      - name: Update conference files
+        run: |
+          # Copy selected conference YAML files
+          cp temp_source/conference/AI/cvpr.yml conference/
+          cp temp_source/conference/AI/iccv.yml conference/
+          cp temp_source/conference/AI/eccv.yml conference/
+          cp temp_source/conference/AI/nips.yml conference/
+          cp temp_source/conference/AI/icml.yml conference/
+          cp temp_source/conference/AI/iclr.yml conference/
+          cp temp_source/conference/AI/aaai.yml conference/
+          cp temp_source/conference/AI/ijcai.yml conference/
+          cp temp_source/conference/MX/miccai.yml conference/
+
+          # Clean up
+          rm -rf temp_source
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git add conference/
+          if git diff --staged --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git commit -m "chore: update conference deadlines [automated]
+
+          Updated conference deadline information from ccfddl/ccf-deadlines repository.
+
+          Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          git push
+
+      - name: Deploy to GitHub Pages
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          exclude_assets: '.github,temp_*,*.md,analysis_docs'

@@ -1,0 +1,21 @@
+# Temporary files
+temp_*
+process_icons.py
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Analysis docs (optional, remove if you want to commit them)
+analysis_docs/
+
+# Original icon images (processed versions in icons/)
+icon_images/

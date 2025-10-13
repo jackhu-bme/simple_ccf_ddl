@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Conference Deadlines Tracker</title>
+    <link rel="stylesheet" href="src/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 AI Conference Deadlines</h1>
+            <p class="subtitle">Track submission deadlines for top AI/CV/ML conferences</p>
+            <div class="update-info">Last updated: <span id="lastUpdate"></span></div>
+        </header>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="upcomingCount">0</div>
+                <div class="stat-label">Upcoming Deadlines</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="nextDeadline">--</div>
+                <div class="stat-label">Next Deadline</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">9</div>
+                <div class="stat-label">Conferences Tracked</div>
+            </div>
+        </section>
+
+        <section class="timeline-section">
+            <h2>📅 Timeline View (Next 12 Months)</h2>
+            <div class="timeline-legend">
+                <span class="legend-item"><span class="dot exact"></span> Confirmed Deadline</span>
+                <span class="legend-item"><span class="dot estimated"></span> Estimated (Historical Average)</span>
+            </div>
+            <div id="timeline" class="timeline"></div>
+        </section>
+
+        <section class="conferences-section">
+            <h2>📋 Conference List</h2>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="cv">Computer Vision</button>
+                <button class="filter-btn" data-filter="ml">Machine Learning</button>
+                <button class="filter-btn" data-filter="ai">AI General</button>
+                <button class="filter-btn" data-filter="medical">Medical</button>
+            </div>
+            <div id="conferenceList" class="conference-grid"></div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Data source: <a href="https://github.com/ccfddl/ccf-deadlines" target="_blank">CCF Deadlines</a></p>
+        <p>Auto-updated via GitHub Actions | Made with ❤️ for researchers</p>
+    </footer>
+
+    <script src="src/script.js"></script>
+</body>
+</html>
