@@ -149,8 +149,8 @@ header h1 {
 
 .timeline-container {
     position: relative;
-    min-height: 400px;
-    padding: 40px 0;
+    min-height: 500px;
+    padding: 60px 0;
 }
 
 .timeline-axis {
@@ -160,6 +160,7 @@ header h1 {
     right: 0;
     height: 3px;
     background: linear-gradient(90deg, #e5e7eb 0%, #e5e7eb 100%);
+    z-index: 1;
 }
 
 .timeline-item {
@@ -167,10 +168,11 @@ header h1 {
     transform: translateX(-50%);
     cursor: pointer;
     transition: all 0.3s ease;
+    z-index: 2;
 }
 
 .timeline-item:hover {
-    transform: translateX(-50%) scale(1.1);
+    transform: translateX(-50%) scale(1.05);
     z-index: 10;
 }
 
@@ -180,8 +182,11 @@ header h1 {
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    position: relative;
-    margin: 0 auto;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
 }
 
 .timeline-marker.exact {
@@ -193,10 +198,7 @@ header h1 {
 }
 
 .timeline-content {
-    position: absolute;
-    top: 35px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
     background: white;
     padding: 12px 16px;
     border-radius: 8px;
@@ -205,11 +207,7 @@ header h1 {
     font-size: 0.85rem;
     min-width: 150px;
     text-align: center;
-}
-
-.timeline-content.alt {
-    top: auto;
-    bottom: 35px;
+    margin-bottom: 15px;
 }
 
 .timeline-conf-name {

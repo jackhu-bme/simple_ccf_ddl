@@ -183,20 +183,46 @@ function renderTimeline() {
 
     const timeRange = oneYearLater - now;
 
-    upcomingDeadlines.forEach((deadline, index) => {
+    // Calculate positions and detect overlaps
+    const positions = upcomingDeadlines.map((deadline, index) => {
         const position = ((deadline.date - now) / timeRange) * 100;
+        return { deadline, position, index, verticalOffset: 0 };
+    });
+
+    // Smart vertical positioning to avoid overlaps
+    // Check if items are too close (within 8% horizontal distance)
+    const minDistance = 8; // minimum horizontal distance percentage
+    for (let i = 0; i < positions.length; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+            const dist = Math.abs(positions[j].position - positions[i].position);
+            if (dist < minDistance) {
+                // Items are close, assign different vertical levels
+                // Use modulo to cycle through multiple vertical positions
+                positions[j].verticalOffset = (positions[i].verticalOffset + 1) % 4;
+            }
+        }
+    }
+
+    upcomingDeadlines.forEach((deadline, index) => {
+        const pos = positions[index];
 
         const item = document.createElement('div');
         item.className = 'timeline-item';
-        item.style.left = `${position}%`;
-        item.style.top = index % 2 === 0 ? '40%' : '60%';
+        item.style.left = `${pos.position}%`;
+
+        // Calculate bottom position (all items above the line)
+        // Multiple levels: 120px, 200px, 280px, 360px from center
+        const baseOffset = 120;
+        const levelSpacing = 80;
+        const bottomOffset = baseOffset + (pos.verticalOffset * levelSpacing);
+        item.style.bottom = `calc(50% + ${bottomOffset}px)`;
 
         const marker = document.createElement('div');
         marker.className = `timeline-marker ${deadline.type}`;
         item.appendChild(marker);
 
         const content = document.createElement('div');
-        content.className = `timeline-content ${index % 2 === 1 ? 'alt' : ''}`;
+        content.className = 'timeline-content';
 
         const confName = document.createElement('div');
         confName.className = 'timeline-conf-name';
