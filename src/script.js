@@ -181,35 +181,27 @@ function renderTimeline() {
     const items = upcomingDeadlines.map((deadline, index) => {
         const config = CONFERENCE_CONFIG[deadline.conference];
         const daysUntil = Math.ceil((deadline.date - now) / (1000 * 60 * 60 * 24));
-
-        // Create custom HTML content for each item
-        const iconHtml = config?.icon ?
-            `<img src="${config.icon}" alt="${deadline.conference}" class="timeline-icon-vis">` : '';
-
         const typeLabel = deadline.type === 'estimated' ? ' (est.)' : '';
         const typeClass = deadline.type === 'estimated' ? 'estimated-item' : 'exact-item';
 
         return {
             id: index,
-            content: `
-                <div class="vis-item-content">
-                    ${iconHtml}
-                    <div class="vis-conf-name">${deadline.conference}</div>
-                    <div class="vis-date">${deadline.date.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    })}${typeLabel}</div>
-                    <div class="vis-days">${daysUntil} days</div>
-                </div>
-            `,
+            content: deadline.conference, // Placeholder, will be replaced by template
             start: deadline.date,
             className: typeClass,
-            type: 'point'
+            type: 'point',
+            // Store data for template function
+            conferenceData: {
+                name: deadline.conference,
+                icon: config?.icon,
+                date: deadline.date,
+                typeLabel: typeLabel,
+                daysUntil: daysUntil
+            }
         };
     });
 
-    // Configure timeline options
+    // Configure timeline options with custom template
     const options = {
         width: '100%',
         height: '400px',
@@ -244,6 +236,46 @@ function renderTimeline() {
         tooltip: {
             followMouse: true,
             overflowMethod: 'cap'
+        },
+        // Custom template function to create DOM elements
+        template: function (item, element, data) {
+            if (!item.conferenceData) return item.content;
+
+            const container = document.createElement('div');
+            container.className = 'vis-item-content';
+
+            // Add icon if available
+            if (item.conferenceData.icon) {
+                const icon = document.createElement('img');
+                icon.src = item.conferenceData.icon;
+                icon.alt = item.conferenceData.name;
+                icon.className = 'timeline-icon-vis';
+                container.appendChild(icon);
+            }
+
+            // Conference name
+            const name = document.createElement('div');
+            name.className = 'vis-conf-name';
+            name.textContent = item.conferenceData.name;
+            container.appendChild(name);
+
+            // Date
+            const date = document.createElement('div');
+            date.className = 'vis-date';
+            date.textContent = item.conferenceData.date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }) + item.conferenceData.typeLabel;
+            container.appendChild(date);
+
+            // Days until
+            const days = document.createElement('div');
+            days.className = 'vis-days';
+            days.textContent = item.conferenceData.daysUntil + ' days';
+            container.appendChild(days);
+
+            return container;
         }
     };
 
