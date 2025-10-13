@@ -183,22 +183,32 @@ function renderTimeline() {
 
     const timeRange = oneYearLater - now;
 
-    // Calculate positions and detect overlaps
+    // Calculate positions and detect overlaps with smarter collision detection
     const positions = upcomingDeadlines.map((deadline, index) => {
         const position = ((deadline.date - now) / timeRange) * 100;
-        return { deadline, position, index, verticalOffset: 0 };
+        return { deadline, position, index, level: 0 };
     });
 
-    // Smart vertical positioning to avoid overlaps
-    // Check if items are too close (within 8% horizontal distance)
-    const minDistance = 8; // minimum horizontal distance percentage
+    // Improved collision detection considering card width (~180px = ~15% on 1200px screen)
+    const minDistance = 15; // minimum horizontal distance percentage to avoid overlap
+    const levels = [0, 1, -1, 2, -2]; // 0=on line, positive=below, negative=above
+
     for (let i = 0; i < positions.length; i++) {
         for (let j = i + 1; j < positions.length; j++) {
             const dist = Math.abs(positions[j].position - positions[i].position);
             if (dist < minDistance) {
-                // Items are close, assign different vertical levels
-                // Use modulo to cycle through multiple vertical positions
-                positions[j].verticalOffset = (positions[i].verticalOffset + 1) % 4;
+                // Items will overlap, find best level
+                const usedLevels = positions.slice(0, j)
+                    .filter(p => Math.abs(p.position - positions[j].position) < minDistance)
+                    .map(p => p.level);
+
+                // Find first available level
+                for (const level of levels) {
+                    if (!usedLevels.includes(level)) {
+                        positions[j].level = level;
+                        break;
+                    }
+                }
             }
         }
     }
@@ -210,12 +220,23 @@ function renderTimeline() {
         item.className = 'timeline-item';
         item.style.left = `${pos.position}%`;
 
-        // Calculate bottom position (all items above the line)
-        // Multiple levels: 120px, 200px, 280px, 360px from center
-        const baseOffset = 120;
-        const levelSpacing = 80;
-        const bottomOffset = baseOffset + (pos.verticalOffset * levelSpacing);
-        item.style.bottom = `calc(50% + ${bottomOffset}px)`;
+        // Calculate position: level 0 on line, positive below, negative above
+        // Each level is 100px apart
+        const levelSpacing = 100;
+        if (pos.level === 0) {
+            item.style.top = '50%';
+            item.style.transform = 'translate(-50%, -50%)';
+        } else if (pos.level > 0) {
+            // Below the line
+            const offset = pos.level * levelSpacing;
+            item.style.top = `calc(50% + ${offset}px)`;
+            item.style.transform = 'translate(-50%, 0)';
+        } else {
+            // Above the line
+            const offset = Math.abs(pos.level) * levelSpacing;
+            item.style.bottom = `calc(50% + ${offset}px)`;
+            item.style.transform = 'translate(-50%, 0)';
+        }
 
         const marker = document.createElement('div');
         marker.className = `timeline-marker ${deadline.type}`;
@@ -223,6 +244,7 @@ function renderTimeline() {
 
         const content = document.createElement('div');
         content.className = 'timeline-content';
+        content.dataset.level = pos.level; // Store level for styling
 
         const confName = document.createElement('div');
         confName.className = 'timeline-conf-name';

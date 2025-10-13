@@ -149,8 +149,8 @@ header h1 {
 
 .timeline-container {
     position: relative;
-    min-height: 500px;
-    padding: 60px 0;
+    min-height: 600px;
+    padding: 150px 0;
 }
 
 .timeline-axis {
@@ -165,26 +165,28 @@ header h1 {
 
 .timeline-item {
     position: absolute;
-    transform: translateX(-50%);
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 2;
 }
 
 .timeline-item:hover {
-    transform: translateX(-50%) scale(1.05);
     z-index: 10;
 }
 
+.timeline-item:hover .timeline-content {
+    transform: scale(1.05);
+}
+
 .timeline-marker {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     position: absolute;
-    bottom: -10px;
     left: 50%;
+    top: 0;
     transform: translateX(-50%);
     z-index: 3;
 }
@@ -207,7 +209,22 @@ header h1 {
     font-size: 0.85rem;
     min-width: 150px;
     text-align: center;
-    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+/* Content positioning based on level */
+.timeline-content[data-level="0"] {
+    margin-top: 30px; /* Space for marker on line */
+}
+
+.timeline-content[data-level="1"],
+.timeline-content[data-level="2"] {
+    margin-top: 30px; /* Below line, content below marker */
+}
+
+.timeline-content[data-level="-1"],
+.timeline-content[data-level="-2"] {
+    margin-bottom: 30px; /* Above line, content above marker */
 }
 
 .timeline-conf-name {
