@@ -177,6 +177,11 @@ function renderTimeline() {
     // Clear previous timeline
     timelineEl.innerHTML = '';
 
+    // Extend timeline range by 2 months on each side
+    const twoMonths = 1000 * 60 * 60 * 24 * 60; // ~2 months in milliseconds
+    const extendedStart = new Date(now.getTime() - twoMonths);
+    const extendedEnd = new Date(oneYearLater.getTime() + twoMonths);
+
     // Prepare items for vis-timeline
     const items = upcomingDeadlines.map((deadline, index) => {
         const config = CONFERENCE_CONFIG[deadline.conference];
@@ -219,10 +224,10 @@ function renderTimeline() {
         zoomable: true,
         zoomMin: 1000 * 60 * 60 * 24 * 7, // Min zoom: 1 week
         zoomMax: 1000 * 60 * 60 * 24 * 365 * 2, // Max zoom: 2 years
-        min: now,
-        max: oneYearLater,
-        start: now,
-        end: oneYearLater,
+        min: extendedStart,
+        max: extendedEnd,
+        start: extendedStart,
+        end: extendedEnd,
         format: {
             minorLabels: {
                 month: 'MMM',

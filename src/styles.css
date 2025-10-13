@@ -199,13 +199,17 @@ header h1 {
 
 /* Exact vs Estimated styling */
 .vis-item.exact-item .vis-item-dot {
-    background-color: var(--success);
-    border-color: var(--success);
+    background-color: var(--success) !important;
+    border-color: var(--success) !important;
+}
+
+.vis-item.exact-item .vis-item-content {
+    border: 2px solid var(--success);
 }
 
 .vis-item.estimated-item .vis-item-dot {
-    background-color: var(--warning);
-    border-color: var(--warning);
+    background-color: var(--warning) !important;
+    border-color: var(--warning) !important;
 }
 
 .vis-item.estimated-item .vis-item-content {
