@@ -209,10 +209,10 @@ function renderTimeline() {
     // Configure timeline options with custom template
     const options = {
         width: '100%',
-        height: '400px',
+        height: '600px',
         margin: {
-            item: 20,
-            axis: 40
+            item: 30,
+            axis: 50
         },
         orientation: {
             axis: 'both',
