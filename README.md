@@ -4,6 +4,8 @@ A simplified, beautiful, and automatically-updated website tracking submission d
 
 **🌐 Live Site**: [https://jackhu-bme.github.io/simple_ccf_ddl/](https://jackhu-bme.github.io/simple_ccf_ddl/)
 
+**📖 中文文档**: [README_CN.md](README_CN.md)
+
 ## 🌟 Features
 
 - **📅 Interactive Timeline**: Visual timeline powered by [vis-timeline](https://visjs.github.io/vis-timeline/) showing all deadlines in the next 12 months
@@ -104,48 +106,51 @@ simple-ccf-ddl/
 
 ## 🔧 Maintenance Guide
 
-### 1. 维护会议列表 (Conference List Maintenance)
+### 1. Conference List Maintenance
 
-#### 添加新会议 (Add a New Conference)
+#### Adding a New Conference
 
-**步骤 Step 1: 更新 GitHub Actions workflow**
-编辑 `.github/workflows/update-deadlines.yml`:
+**Step 1: Update GitHub Actions workflow**
+
+Edit `.github/workflows/update-deadlines.yml`:
 ```yaml
 - name: Update conference files
   run: |
     cp temp_source/conference/AI/cvpr.yml conference/
     # ... existing conferences ...
-    cp temp_source/conference/AI/new-conference.yml conference/  # 添加这一行
+    cp temp_source/conference/AI/new-conference.yml conference/  # Add this line
 ```
 
-**步骤 Step 2: 更新前端配置**
-编辑 `src/script.js`:
+**Step 2: Update frontend configuration**
+
+Edit `src/script.js`:
 ```javascript
-// 1. 添加到 CONFERENCE_CONFIG
+// 1. Add to CONFERENCE_CONFIG
 const CONFERENCE_CONFIG = {
     // ... existing configs ...
     'NEW-CONF': {
         icon: 'icons/new-conf.png',
-        category: 'ml',  // 选择: cv, ml, ai, medical
+        category: 'ml',  // Options: cv, ml, ai, medical
         fullName: 'New Conference Full Name'
     }
 };
 
-// 2. 添加到 CONFERENCE_FILES
+// 2. Add to CONFERENCE_FILES
 const CONFERENCE_FILES = [
     'cvpr', 'iccv', 'eccv', 'nips', 'icml', 'iclr',
     'aaai', 'ijcai', 'miccai',
-    'new-conference'  // 添加这一行（使用 YAML 文件名，不含 .yml）
+    'new-conference'  // Add this line (YAML filename without .yml)
 ];
 ```
 
-**步骤 Step 3: 添加会议图标**
-- 将 120x120 PNG 图标放入 `icons/` 目录
-- 命名为 `new-conf.png` (与 CONFERENCE_CONFIG 中的 icon 路径匹配)
-- 建议使用透明背景
+**Step 3: Add conference icon**
+- Place a 120x120 PNG icon in the `icons/` directory
+- Name it `new-conf.png` (matching the icon path in CONFERENCE_CONFIG)
+- Transparent background recommended
 
-**步骤 Step 4: 更新首页筛选器（可选）**
-如果需要新的分类，编辑 `index.html`:
+**Step 4: Update homepage filters (Optional)**
+
+If you need a new category, edit `index.html`:
 ```html
 <div class="filters">
     <button class="filter-btn active" data-filter="all">All</button>
@@ -153,49 +158,49 @@ const CONFERENCE_FILES = [
     <button class="filter-btn" data-filter="ml">Machine Learning</button>
     <button class="filter-btn" data-filter="ai">AI General</button>
     <button class="filter-btn" data-filter="medical">Medical</button>
-    <button class="filter-btn" data-filter="new-category">New Category</button>  <!-- 添加新分类 -->
+    <button class="filter-btn" data-filter="new-category">New Category</button>  <!-- Add new category -->
 </div>
 ```
 
-#### 删除会议 (Remove a Conference)
+#### Removing a Conference
 
-1. 从 `.github/workflows/update-deadlines.yml` 中删除对应的 `cp` 命令行
-2. 从 `src/script.js` 的 `CONFERENCE_CONFIG` 和 `CONFERENCE_FILES` 中删除条目
-3. 删除 `conference/` 目录下的对应 YAML 文件
-4. 删除 `icons/` 目录下的对应图标文件
+1. Remove the corresponding `cp` command from `.github/workflows/update-deadlines.yml`
+2. Remove entries from `CONFERENCE_CONFIG` and `CONFERENCE_FILES` in `src/script.js`
+3. Delete the corresponding YAML file from the `conference/` directory
+4. Delete the corresponding icon file from the `icons/` directory
 
 ---
 
-### 2. 维护 GitHub Actions Workflow
+### 2. GitHub Actions Workflow Maintenance
 
-#### 自动更新频率
+#### Auto-Update Frequency
 
-**位置:** `.github/workflows/update-deadlines.yml`
+**Location:** `.github/workflows/update-deadlines.yml`
 
-**当前配置:** 每周日 00:00 UTC 自动运行
+**Current Configuration:** Runs every Sunday at 00:00 UTC
 ```yaml
 on:
   schedule:
     - cron: '0 0 * * 0'  # Sunday at 00:00 UTC
-  workflow_dispatch:      # 也支持手动触发
+  workflow_dispatch:      # Also supports manual trigger
 ```
 
-**修改频率示例:**
+**Frequency Modification Examples:**
 ```yaml
-# 每天运行
+# Run daily
 - cron: '0 0 * * *'
 
-# 每周一和周五运行
+# Run every Monday and Friday
 - cron: '0 0 * * 1,5'
 
-# 每月1号和15号运行
+# Run on the 1st and 15th of each month
 - cron: '0 0 1,15 * *'
 
-# 每3天运行一次
+# Run every 3 days
 - cron: '0 0 */3 * *'
 ```
 
-**Cron 语法说明:**
+**Cron Syntax:**
 ```
 ┌───────────── minute (0 - 59)
 │ ┌───────────── hour (0 - 23)
@@ -206,83 +211,83 @@ on:
 * * * * *
 ```
 
-#### 手动触发更新
+#### Manual Trigger Update
 
-1. 进入 GitHub 仓库页面
-2. 点击 **Actions** 标签
-3. 选择 **"Update Conference Deadlines"** workflow
-4. 点击 **"Run workflow"** 按钮
-5. 选择 branch (通常是 main)
-6. 点击绿色的 **"Run workflow"** 按钮
+1. Go to your GitHub repository page
+2. Click the **Actions** tab
+3. Select **"Update Conference Deadlines"** workflow
+4. Click **"Run workflow"** button
+5. Select branch (usually main)
+6. Click the green **"Run workflow"** button
 
-#### 查看更新日志
+#### View Update Logs
 
-1. Actions → 点击最近的 workflow run
-2. 查看 "Update conference files" 步骤
-3. 检查是否有文件被更新
-4. 查看 "Check for changes" 步骤确认是否有新的 commit
+1. Actions → Click on the most recent workflow run
+2. View "Update conference files" step
+3. Check if any files were updated
+4. Check "Check for changes" step to confirm if there's a new commit
 
-#### Workflow 故障排查
+#### Workflow Troubleshooting
 
-**问题 1: Workflow 没有自动运行**
-- 检查: Actions 是否被启用 (Settings → Actions → General)
-- 检查: 仓库是否有活跃提交 (GitHub 会暂停长期不活跃仓库的定时任务)
-- 解决: 手动触发一次 workflow 重新激活
+**Issue 1: Workflow not running automatically**
+- Check: Are Actions enabled? (Settings → Actions → General)
+- Check: Is the repository active? (GitHub pauses scheduled workflows for inactive repositories)
+- Solution: Manually trigger the workflow once to reactivate
 
-**问题 2: Workflow 运行失败**
-- 查看错误日志 (Actions → 失败的 run → 红色的步骤)
-- 常见原因:
-  - 源仓库 (ccfddl/ccf-deadlines) 结构变化
-  - 网络问题导致 git clone 失败
-  - 权限问题 (检查 GITHUB_TOKEN)
+**Issue 2: Workflow run fails**
+- View error logs (Actions → failed run → red step)
+- Common causes:
+  - Source repository (ccfddl/ccf-deadlines) structure changed
+  - Network issues causing git clone failure
+  - Permission issues (check GITHUB_TOKEN)
 
-**问题 3: 数据更新了但网站没变化**
-- GitHub Pages 有 10 分钟左右的缓存延迟
-- 强制刷新: Ctrl+F5 (Windows) 或 Cmd+Shift+R (Mac)
-- 检查 workflow 是否真的生成了新的 commit
+**Issue 3: Data updated but website unchanged**
+- GitHub Pages has about 10 minutes of cache delay
+- Force refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
+- Check if workflow actually generated a new commit
 
 ---
 
-### 3. 维护时间线显示
+### 3. Timeline Display Maintenance
 
-#### 调整时间线高度和间距
+#### Adjust Timeline Height and Spacing
 
-**位置:** `src/script.js` → `renderTimeline()` 函数
+**Location:** `src/script.js` → `renderTimeline()` function
 
-**当前配置:**
+**Current Configuration:**
 ```javascript
 const options = {
     width: '100%',
-    height: '600px',        // 时间线整体高度
+    height: '600px',        // Overall timeline height
     margin: {
-        item: 30,            // 堆叠项目间的垂直间距
-        axis: 50             // 轴线边距
+        item: 30,            // Vertical spacing between stacked items
+        axis: 50             // Axis margin
     },
     // ...
 };
 ```
 
-**调整建议:**
-- **会议很多 (>15个)**: 增加 `height` 到 `'700px'` 或 `'800px'`
-- **会议很少 (<5个)**: 减少 `height` 到 `'400px'`
-- **项目重叠**: 增加 `margin.item` 到 `40` 或 `50`
+**Adjustment Recommendations:**
+- **Many conferences (>15)**: Increase `height` to `'700px'` or `'800px'`
+- **Few conferences (<5)**: Reduce `height` to `'400px'`
+- **Items overlapping**: Increase `margin.item` to `40` or `50`
 
-#### 修改时间线显示范围
+#### Modify Timeline Display Range
 
-**当前:** 显示未来 12 个月，前后各扩展 2 个月
+**Current:** Display next 12 months, extended by 2 months on each side
 
-**位置:** `src/script.js` → `renderTimeline()` 函数
+**Location:** `src/script.js` → `renderTimeline()` function
 ```javascript
 const now = new Date();
 const oneYearLater = new Date(now);
-oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);  // 修改这里改变显示范围
+oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);  // Modify here to change display range
 
-const twoMonths = 1000 * 60 * 60 * 24 * 60;  // 修改这里改变扩展范围
+const twoMonths = 1000 * 60 * 60 * 24 * 60;  // Modify here to change extension range
 const extendedStart = new Date(now.getTime() - twoMonths);
 const extendedEnd = new Date(oneYearLater.getTime() + twoMonths);
 ```
 
-**示例: 显示未来 6 个月**
+**Example: Display next 6 months**
 ```javascript
 const sixMonthsLater = new Date(now);
 sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
@@ -292,14 +297,14 @@ const extendedStart = new Date(now.getTime() - oneMonth);
 const extendedEnd = new Date(sixMonthsLater.getTime() + oneMonth);
 ```
 
-#### 修改时间线配色
+#### Modify Timeline Colors
 
-**位置:** `src/styles.css`
+**Location:** `src/styles.css`
 
-**确定的截止日期 (绿色):**
+**Confirmed Deadlines (Green):**
 ```css
 .vis-item.exact-item .vis-item-dot {
-    background-color: var(--success) !important;  /* 修改 --success 变量 */
+    background-color: var(--success) !important;  /* Modify --success variable */
     border-color: var(--success) !important;
 }
 
@@ -308,10 +313,10 @@ const extendedEnd = new Date(sixMonthsLater.getTime() + oneMonth);
 }
 ```
 
-**估算的截止日期 (橙色):**
+**Estimated Deadlines (Orange):**
 ```css
 .vis-item.estimated-item .vis-item-dot {
-    background-color: var(--warning) !important;  /* 修改 --warning 变量 */
+    background-color: var(--warning) !important;  /* Modify --warning variable */
     border-color: var(--warning) !important;
 }
 
@@ -320,45 +325,45 @@ const extendedEnd = new Date(sixMonthsLater.getTime() + oneMonth);
 }
 ```
 
-**修改全局颜色变量:**
+**Modify Global Color Variables:**
 ```css
 :root {
     --primary: #667eea;
     --secondary: #764ba2;
-    --success: #10b981;    /* 绿色 - 确定的截止日期 */
-    --warning: #f59e0b;    /* 橙色 - 估算的截止日期 */
-    --danger: #ef4444;     /* 红色 - 紧急/当前时间线 */
+    --success: #10b981;    /* Green - confirmed deadlines */
+    --warning: #f59e0b;    /* Orange - estimated deadlines */
+    --danger: #ef4444;     /* Red - urgent/current timeline */
     /* ... */
 }
 ```
 
-#### 禁用/启用时间线交互功能
+#### Enable/Disable Timeline Interactive Features
 
-**位置:** `src/script.js` → `renderTimeline()` 函数
+**Location:** `src/script.js` → `renderTimeline()` function
 ```javascript
 const options = {
     // ...
-    zoomable: true,        // 设为 false 禁用缩放
-    moveable: true,        // 设为 false 禁用拖动
-    selectable: true,      // 设为 false 禁用选择
+    zoomable: true,        // Set to false to disable zoom
+    moveable: true,        // Set to false to disable drag
+    selectable: true,      // Set to false to disable selection
     // ...
 };
 ```
 
 ---
 
-### 4. 维护截止日期计算逻辑
+### 4. Deadline Calculation Logic Maintenance
 
-#### 修改估算算法
+#### Modify Estimation Algorithm
 
-**位置:** `src/script.js` → `calculateAverageDeadline()` 函数
+**Location:** `src/script.js` → `calculateAverageDeadline()` function
 
-**当前逻辑:**
-1. 排除当前年及未来年份的数据
-2. 从历史数据中计算平均月份和日期
-3. 投射到下一年
+**Current Logic:**
+1. Exclude current year and future years
+2. Calculate average month and date from historical data
+3. Project to next year
 
-**修改示例 - 只使用最近 3 年的数据:**
+**Modification Example - Use only last 3 years:**
 ```javascript
 function calculateAverageDeadline(confs, excludeLatestYear = true) {
     const now = new Date();
@@ -366,7 +371,7 @@ function calculateAverageDeadline(confs, excludeLatestYear = true) {
 
     const validConfs = confs.filter(conf => {
         if (excludeLatestYear && conf.year >= currentYear) return false;
-        if (conf.year < currentYear - 3) return false;  // 只使用最近3年
+        if (conf.year < currentYear - 3) return false;  // Only use last 3 years
         return conf.timeline && conf.timeline.length > 0;
     });
 
@@ -374,65 +379,65 @@ function calculateAverageDeadline(confs, excludeLatestYear = true) {
 }
 ```
 
-#### 修改截止日期颜色警告级别
+#### Modify Deadline Color Warning Levels
 
-**位置:** `src/script.js` → `getCountdown()` 函数
+**Location:** `src/script.js` → `getCountdown()` function
 
-**当前阈值:**
+**Current Thresholds:**
 ```javascript
 if (days <= 7) {
-    className = 'urgent';  // 红色 - 7天内
+    className = 'urgent';  // Red - within 7 days
 } else if (days <= 30) {
-    className = 'soon';    // 橙色 - 30天内
+    className = 'soon';    // Orange - within 30 days
 } else {
-    className = 'normal';  // 绿色 - 30天以上
+    className = 'normal';  // Green - more than 30 days
 }
 ```
 
-**修改示例:**
+**Modification Example:**
 ```javascript
 if (days <= 3) {
-    className = 'urgent';  // 3天内
+    className = 'urgent';  // Within 3 days
 } else if (days <= 14) {
-    className = 'soon';    // 14天内
+    className = 'soon';    // Within 14 days
 } else {
-    className = 'normal';  // 14天以上
+    className = 'normal';  // More than 14 days
 }
 ```
 
 ---
 
-### 5. 维护样式和布局
+### 5. Style and Layout Maintenance
 
-#### 修改配色方案
+#### Modify Color Scheme
 
-**位置:** `src/styles.css` → `:root` CSS 变量
+**Location:** `src/styles.css` → `:root` CSS variables
 
 ```css
 :root {
-    --primary: #667eea;     /* 主色调 - 按钮、链接 */
-    --secondary: #764ba2;   /* 次色调 - 渐变背景 */
-    --success: #10b981;     /* 成功/确定 */
-    --warning: #f59e0b;     /* 警告/估算 */
-    --danger: #ef4444;      /* 危险/紧急 */
-    --dark: #1f2937;        /* 文字颜色 */
-    --light: #f9fafb;       /* 浅背景 */
+    --primary: #667eea;     /* Primary - buttons, links */
+    --secondary: #764ba2;   /* Secondary - gradient background */
+    --success: #10b981;     /* Success/confirmed */
+    --warning: #f59e0b;     /* Warning/estimated */
+    --danger: #ef4444;      /* Danger/urgent */
+    --dark: #1f2937;        /* Text color */
+    --light: #f9fafb;       /* Light background */
 
-    /* 会议分类颜色 */
-    --cv-color: #3b82f6;    /* 计算机视觉 - 蓝色 */
-    --ml-color: #8b5cf6;    /* 机器学习 - 紫色 */
-    --ai-color: #ec4899;    /* 人工智能 - 粉色 */
-    --medical-color: #10b981; /* 医学 - 绿色 */
+    /* Conference category colors */
+    --cv-color: #3b82f6;    /* Computer Vision - blue */
+    --ml-color: #8b5cf6;    /* Machine Learning - purple */
+    --ai-color: #ec4899;    /* AI - pink */
+    --medical-color: #10b981; /* Medical - green */
 }
 ```
 
-#### 修改响应式断点
+#### Modify Responsive Breakpoints
 
-**位置:** `src/styles.css` → 底部的 `@media` 查询
+**Location:** `src/styles.css` → bottom `@media` queries
 
 ```css
 @media (max-width: 768px) {
-    /* 平板和手机样式 */
+    /* Tablet and mobile styles */
     header h1 {
         font-size: 2rem;
     }
@@ -442,30 +447,30 @@ if (days <= 3) {
     }
 }
 
-/* 添加更多断点 */
+/* Add more breakpoints */
 @media (max-width: 480px) {
-    /* 小手机样式 */
+    /* Small mobile styles */
 }
 
 @media (min-width: 1600px) {
-    /* 大屏幕样式 */
+    /* Large screen styles */
 }
 ```
 
 ---
 
-### 6. 数据源维护
+### 6. Data Source Maintenance
 
-#### 检查源仓库格式
+#### Check Source Repository Format
 
-如果自动更新突然失败，可能是源仓库 ([ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines)) 的数据格式发生了变化。
+If auto-updates suddenly fail, the source repository ([ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines)) data format may have changed.
 
-**检查步骤:**
-1. 访问 https://github.com/ccfddl/ccf-deadlines/tree/main/conference
-2. 检查你关注的会议文件格式是否改变
-3. 查看 `analysis_docs/` 中的文档了解预期格式
+**Check Steps:**
+1. Visit https://github.com/ccfddl/ccf-deadlines/tree/main/conference
+2. Check if the conference file format you're tracking has changed
+3. Refer to documentation in `analysis_docs/` for expected format
 
-**YAML 文件预期格式:**
+**Expected YAML File Format:**
 ```yaml
 - title: CVPR
   description: IEEE/CVF Conference on Computer Vision and Pattern Recognition
@@ -491,146 +496,146 @@ if (days <= 3) {
       place: Nashville, Tennessee, USA
 ```
 
-#### 切换数据源
+#### Switch Data Source
 
-如果需要使用其他数据源，修改 `.github/workflows/update-deadlines.yml`:
+If you need to use a different data source, modify `.github/workflows/update-deadlines.yml`:
 
 ```yaml
 - name: Clone source repository
   run: |
     git clone https://github.com/your-fork/ccf-deadlines.git temp_source
-    # 或使用其他数据源
+    # Or use another data source
 ```
 
 ---
 
-### 7. 常见问题 (FAQ)
+### 7. Frequently Asked Questions (FAQ)
 
-#### Q1: 为什么有些会议显示"估算"日期？
-**A:** 当会议的最新年份截止日期尚未公布时，系统会根据历史数据（过去多年的平均值）计算一个估算日期，以橙色虚线边框标识。
+#### Q1: Why do some conferences show "estimated" dates?
+**A:** When a conference's latest year deadline hasn't been announced yet, the system calculates an estimated date based on historical data (average from past years), marked with an orange dashed border.
 
-#### Q2: 如何强制更新数据？
+#### Q2: How to force update data?
 **A:**
-1. 访问 GitHub Actions 页面
-2. 手动触发 "Update Conference Deadlines" workflow
-3. 等待 workflow 完成（约 1-2 分钟）
-4. 刷新网站（Ctrl+F5 清除缓存）
+1. Visit GitHub Actions page
+2. Manually trigger "Update Conference Deadlines" workflow
+3. Wait for workflow to complete (about 1-2 minutes)
+4. Refresh website (Ctrl+F5 to clear cache)
 
-#### Q3: 时间线上的项目为什么会重叠？
-**A:** 不应该重叠。vis-timeline 库会自动检测碰撞并垂直堆叠。如果出现重叠：
-1. 检查浏览器控制台是否有 JavaScript 错误
-2. 尝试增加 `margin.item` 值
-3. 检查 vis-timeline CDN 是否加载成功
+#### Q3: Why do timeline items overlap?
+**A:** They shouldn't overlap. The vis-timeline library automatically detects collisions and stacks vertically. If overlapping occurs:
+1. Check browser console for JavaScript errors
+2. Try increasing `margin.item` value
+3. Check if vis-timeline CDN loaded successfully
 
-#### Q4: 如何修改时区？
-**A:** 时区信息来自源 YAML 文件的 `timezone` 字段。我们的 `parseTimezone()` 函数支持：
+#### Q4: How to modify timezone?
+**A:** Timezone information comes from the source YAML file's `timezone` field. Our `parseTimezone()` function supports:
 - `AoE` (Anywhere on Earth = UTC-12)
-- `UTC±N` 格式 (如 `UTC-8`, `UTC+0`)
+- `UTC±N` format (e.g., `UTC-8`, `UTC+0`)
 
-如需支持其他格式，修改 `src/script.js` 中的 `parseTimezone()` 函数。
+To support other formats, modify the `parseTimezone()` function in `src/script.js`.
 
-#### Q5: 网站部署后显示 404
+#### Q5: Website shows 404 after deployment
 **A:**
-1. 检查 GitHub Pages 是否启用 (Settings → Pages)
-2. 确认部署分支是 `gh-pages`
-3. 检查 Actions 是否成功运行
-4. 等待 5-10 分钟（GitHub Pages 有缓存延迟）
+1. Check if GitHub Pages is enabled (Settings → Pages)
+2. Confirm deployment branch is `gh-pages`
+3. Check if Actions ran successfully
+4. Wait 5-10 minutes (GitHub Pages has cache delay)
 
-#### Q6: 如何备份数据？
-**A:** 所有数据都在 Git 仓库中：
-1. Fork 仓库到自己账号
-2. 或定期运行 `git pull` 到本地备份
-3. `conference/` 目录包含所有会议数据
-4. `analysis_docs/` 目录包含技术文档
-
----
-
-## 🎓 技术文档
-
-详细的技术决策和实现细节记录在 `analysis_docs/` 目录：
-
-- **vis-timeline 集成**: `2025-10-13_17-39_vis_timeline_integration.md`
-  - 为什么放弃自定义碰撞检测
-  - vis-timeline 的优势和配置
-  - 代码迁移过程
-
-- **时间线间距优化**: `2025-10-13_18-12_timeline_spacing_increase.md`
-  - 垂直空间调优过程
-  - 参数调整说明
-  - 视觉效果对比
-
-- **布局改进历史**: `2025-10-13_17-32_timeline_v2_fixes.md`
-  - 早期碰撞检测尝试
-  - 布局算法演进
+#### Q6: How to backup data?
+**A:** All data is in the Git repository:
+1. Fork the repository to your own account
+2. Or periodically run `git pull` to backup locally
+3. `conference/` directory contains all conference data
+4. `analysis_docs/` directory contains technical documentation
 
 ---
 
-## 🚀 快速部署指南
+## 🎓 Technical Documentation
+
+Detailed technical decisions and implementation details are documented in the `analysis_docs/` directory:
+
+- **vis-timeline Integration**: `2025-10-13_17-39_vis_timeline_integration.md`
+  - Why we abandoned custom collision detection
+  - vis-timeline advantages and configuration
+  - Code migration process
+
+- **Timeline Spacing Optimization**: `2025-10-13_18-12_timeline_spacing_increase.md`
+  - Vertical space tuning process
+  - Parameter adjustment instructions
+  - Visual effect comparison
+
+- **Layout Improvement History**: `2025-10-13_17-32_timeline_v2_fixes.md`
+  - Early collision detection attempts
+  - Layout algorithm evolution
+
+---
+
+## 🚀 Quick Deployment Guide
 
 ### 1. Fork this repository
-点击右上角的 **Fork** 按钮
+Click the **Fork** button in the top right corner
 
 ### 2. Enable GitHub Pages
-1. 进入你 fork 的仓库
+1. Go to your forked repository
 2. Settings → Pages
-3. Source: 选择 **Deploy from a branch**
-4. Branch: 选择 **gh-pages** / **(root)**
+3. Source: Select **Deploy from a branch**
+4. Branch: Select **gh-pages** / **(root)**
 5. Save
 
 ### 3. Enable GitHub Actions
-1. Actions 标签
-2. 点击 **"I understand my workflows, go ahead and enable them"**
+1. Actions tab
+2. Click **"I understand my workflows, go ahead and enable them"**
 
-### 4. 首次部署
+### 4. First Deployment
 1. Actions → "Update Conference Deadlines"
-2. 点击 **"Run workflow"**
-3. 等待完成（约 1-2 分钟）
+2. Click **"Run workflow"**
+3. Wait for completion (about 1-2 minutes)
 
-### 5. 访问网站
+### 5. Access Your Site
 `https://your-username.github.io/simple-ccf-ddl/`
 
 ---
 
-## 🎯 项目设计理念
+## 🎯 Project Design Philosophy
 
-### 为什么创建这个项目？
+### Why Create This Project?
 
-1. **简化复杂性**: [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) 包含 100+ 会议，对于专注特定领域的研究者来说信息过载
-2. **无服务器**: 完全静态网站 + GitHub Actions，零维护成本
-3. **自动化**: 无需手动更新，数据来源于社区维护的仓库
-4. **视觉优先**: 使用专业时间线库，直观展示截止日期分布
-5. **开源透明**: 所有代码和数据公开，易于定制和维护
+1. **Simplify Complexity**: [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) contains 100+ conferences, which is information overload for researchers focused on specific areas
+2. **Serverless**: Fully static website + GitHub Actions, zero maintenance cost
+3. **Automated**: No manual updates needed, data sourced from community-maintained repository
+4. **Visual First**: Uses professional timeline library for intuitive deadline distribution display
+5. **Open and Transparent**: All code and data public, easy to customize and maintain
 
-### 技术选型原则
+### Technology Selection Principles
 
-- **No build step**: 不使用 Node.js/Webpack/Vite，直接用浏览器原生功能
-- **CDN dependencies**: 使用 unpkg.com 加载外部库，无需 npm
-- **Progressive enhancement**: 基础功能优先，增强功能渐进添加
-- **Mobile-first**: 响应式设计，移动端体验优先
-- **Community data**: 数据源于社区，回馈社区
+- **No build step**: No Node.js/Webpack/Vite, uses browser native features directly
+- **CDN dependencies**: Uses unpkg.com to load external libraries, no npm needed
+- **Progressive enhancement**: Basic features first, enhanced features added progressively
+- **Mobile-first**: Responsive design, mobile experience prioritized
+- **Community data**: Data from community, gives back to community
 
 ---
 
-## 📝 更新日志
+## 📝 Changelog
 
 ### v1.3.0 (2025-10-13)
-- ✨ 增加时间线垂直间距，提升可读性
-- 📝 完善维护文档
+- ✨ Increased timeline vertical spacing for better readability
+- 📝 Enhanced maintenance documentation
 
 ### v1.2.0 (2025-10-13)
-- ✨ 集成 vis-timeline 专业时间线库
-- 🐛 修复时间线边界溢出问题
-- 🎨 优化确定/估算截止日期的视觉区分
+- ✨ Integrated vis-timeline professional timeline library
+- 🐛 Fixed timeline boundary overflow issues
+- 🎨 Improved visual distinction between confirmed/estimated deadlines
 
 ### v1.1.0 (2025-10-13)
-- ✨ 实现自动碰撞检测和智能堆叠
-- 🎨 优化时间线布局
+- ✨ Implemented automatic collision detection and smart stacking
+- 🎨 Optimized timeline layout
 
 ### v1.0.0 (2025-10-13)
-- 🎉 初始版本发布
-- ✨ 支持 9 个顶会跟踪
-- ✨ GitHub Actions 自动更新
-- ✨ 响应式设计
+- 🎉 Initial release
+- ✨ Support for tracking 9 top conferences
+- ✨ GitHub Actions auto-updates
+- ✨ Responsive design
 
 ---
 
@@ -642,15 +647,15 @@ MIT License - Feel free to use this for your own conference tracking needs!
 
 ## 🙏 Acknowledgments
 
-- **数据来源**: [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) - 感谢所有贡献者
-- **时间线库**: [vis-timeline](https://visjs.github.io/vis-timeline/) - 专业的时间线可视化库
-- **YAML 解析**: [js-yaml](https://github.com/nodeca/js-yaml) - JavaScript YAML 解析器
-- **图标**: 各会议官方网站
-- **灵感**: 为需要跟踪特定 AI/CV/ML 会议的研究者而生
+- **Data Source**: [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) - Thanks to all contributors
+- **Timeline Library**: [vis-timeline](https://visjs.github.io/vis-timeline/) - Professional timeline visualization library
+- **YAML Parser**: [js-yaml](https://github.com/nodeca/js-yaml) - JavaScript YAML parser
+- **Icons**: From official conference websites
+- **Inspiration**: Built for researchers who need to track specific AI/CV/ML conferences
 
 ---
 
 **Made with ❤️ for the AI research community**
 
-**维护者**: [jackhu-bme](https://github.com/jackhu-bme)
-**问题反馈**: [GitHub Issues](https://github.com/jackhu-bme/simple_ccf_ddl/issues)
+**Maintainer**: [jackhu-bme](https://github.com/jackhu-bme)
+**Issue Reports**: [GitHub Issues](https://github.com/jackhu-bme/simple_ccf_ddl/issues)
