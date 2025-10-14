@@ -39,7 +39,7 @@
 
 ### 自动更新
 本网站使用 **GitHub Actions** 自动完成以下任务:
-1. 每周日 00:00 UTC 从 [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) 仓库获取最新截止日期数据
+1. 每天 00:00 UTC 从 [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) 仓库获取最新截止日期数据
 2. 更新 `conference/` 目录中的会议 YAML 文件
 3. 如果有截止日期更新，则提交更改
 4. 自动重新部署到 GitHub Pages (通过 gh-pages 分支)
@@ -177,11 +177,11 @@ const CONFERENCE_FILES = [
 
 **位置:** `.github/workflows/update-deadlines.yml`
 
-**当前配置:** 每周日 00:00 UTC 自动运行
+**当前配置:** 每天 00:00 UTC 自动运行
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 周日 00:00 UTC
+    - cron: '0 0 * * *'  # 每天 00:00 UTC
   workflow_dispatch:      # 也支持手动触发
 ```
 

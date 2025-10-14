@@ -39,7 +39,7 @@ A simplified, beautiful, and automatically-updated website tracking submission d
 
 ### Automatic Updates
 This website uses **GitHub Actions** to automatically:
-1. Fetch latest deadline data from the [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) repository every Sunday at 00:00 UTC
+1. Fetch latest deadline data from the [ccfddl/ccf-deadlines](https://github.com/ccfddl/ccf-deadlines) repository daily at 00:00 UTC
 2. Update conference YAML files in `conference/` directory
 3. Commit changes if any deadlines were updated
 4. Automatically redeploy to GitHub Pages (via gh-pages branch)
@@ -177,11 +177,11 @@ If you need a new category, edit `index.html`:
 
 **Location:** `.github/workflows/update-deadlines.yml`
 
-**Current Configuration:** Runs every Sunday at 00:00 UTC
+**Current Configuration:** Runs daily at 00:00 UTC
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Sunday at 00:00 UTC
+    - cron: '0 0 * * *'  # Daily at 00:00 UTC
   workflow_dispatch:      # Also supports manual trigger
 ```
 
